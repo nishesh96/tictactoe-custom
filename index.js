@@ -59,12 +59,6 @@ function getRowBoxes(colIdx) {
         if (sum % 2 === 0) {
             additionalClass = 'lightBackground'
         }
-        // const gridValue = grid[colIdx][rowIdx];
-        // if (gridValue === 1) {
-        //     content = '<span class="cross">X</span>';
-        // } else if (gridValue === 2) {
-        //     content = '<span class="circle">O</span>';
-        // }
         rowDivs = rowDivs + '<div id="' + (colIdx + 1) + "" + (rowIdx + 1) + '";  colIdx="' + rowIdx + '" rowIdx="' + colIdx + '" class="box ' +
             additionalClass + '">' + content + '</div>';
     }
@@ -92,10 +86,7 @@ function renderMainGrid() {
 function onBoxClick() {
     var rowIdx = this.getAttribute("rowIdx");
     var colIdx = this.getAttribute("colIdx");
-    // if (grid[colIdx][rowIdx] > 0) {
-    //     alert("Already chosen. Try another box");
-    // } else {
-    var marked = $(this); // get the square that player selects
+    var marked = $(this);
     var token1 = gameData.token1;
     var token2 = gameData.token2;
 
@@ -168,7 +159,7 @@ function onBoxClick() {
         }
     }
 };
-// Create a 2d array with diagonal values
+// to create a 2d array with diagonal values
 var diagArr = function (size, booleanNum) {
     var row = [];
     var col = [];
@@ -307,7 +298,7 @@ startBtn.addEventListener("click", function () {
         startPlay(gameData.playerName);
     } else if ($('#option:checked').val() == undefined)
         alert("Please select your option");
-    else
+    else 
         alert("Please enter Player name");
 });
 
