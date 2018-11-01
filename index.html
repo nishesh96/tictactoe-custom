@@ -1,0 +1,57 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+    <div class="header">
+        <h1> Tic Tac @ Hiver</h1>
+    </div>
+    <p id="message">WELCOME</p>
+
+    <div class="parentTop">
+        <div class="gridTop">
+            <div id="grid">
+
+            </div>
+        </div>
+    </div>
+    <div class="input">
+        <label for="name">Enter your Name: </label>
+        <input type="text" id="name" name="name">
+    </div>
+
+    <div class="choose">
+        <p>Choose your shape</p>
+        <input style="margin-left:15px;margin-right:8px;" name="option" id="option" type="radio" value="X">
+        <p class="options">X</p>
+        <input style="margin-left:10px;margin-right:8px;" name="option" type="radio" id="option" value="O">
+        <p class="options" style="color: red;">O</p><br>
+    </div>
+
+    <div class="play">
+        <button type="button" id="start">Play</button>
+    </div>
+
+    <div class="scores" style="display: none">
+        <div id="player1">
+            <p class="name" style="text-transform: capitalize">Player</p>
+            <p class="num">0</p>
+        </div>
+        <div id="player2">
+            <p class="name">Computer</p>
+            <p class="num">0</p>
+        </div>
+    </div>
+
+    <div class="play restart" style="display:none">
+        <button type="button" id="restart">Restart</button>
+    </div>
+    <script type="text/javascript" src="./index.js"></script>
+
+</body>
+
+</html>
