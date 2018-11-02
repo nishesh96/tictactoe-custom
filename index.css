@@ -100,3 +100,9 @@
 .changeColor {
     color: red;
 }
+
+button {
+    padding: 10px 20px;
+    color: aliceblue;
+    border-radius: 10px;
+}
