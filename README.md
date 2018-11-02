@@ -5,4 +5,7 @@ Clone the repsitory.
 Open index.html and start the game play. Enjoy.
 
 
-XXXX
+XOX
+OXO
+OOX
+
