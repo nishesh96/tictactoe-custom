@@ -19,12 +19,12 @@
  * 
  */
 const grid = [];
-const GRID_LENGTH = 3;
-var size = 3;
+var GRID_LENGTH = 3;
+var size = GRID_LENGTH;
 let turn = 'X';
 var gameData = {
-    token1: 'x',
-    token2: 'o',
+    token1: 'X',
+    token2: 'O',
     movesPlayer: [],
     movesComp: [],
     scorePlayer: 0,
@@ -34,9 +34,9 @@ var gameData = {
 
 var gameOver = false;
 var turns = 0;
-var arrayId = ["11", "12", "13", "21", "22", "23", "31", "32", "33"];
+var arrayId = ["11", "12", "13", "14", "21", "22", "23", "24", "31", "32", "33", "34", "41", "42", "43", "44"];
 
-var a1, a2, a3, b1, b2, b3, c1, c2, c3;
+var a1, a2, a3, a4, b1, b2, b3, b4, c1, c2, c3, c4, d1, d2, d3, d4;
 
 
 function initializeGrid() {
@@ -59,13 +59,7 @@ function getRowBoxes(colIdx) {
         if (sum % 2 === 0) {
             additionalClass = 'lightBackground'
         }
-        // const gridValue = grid[colIdx][rowIdx];
-        // if (gridValue === 1) {
-        //     content = '<span class="cross">X</span>';
-        // } else if (gridValue === 2) {
-        //     content = '<span class="circle">O</span>';
-        // }
-        rowDivs = rowDivs + '<div id="' + (colIdx + 1) + "" + (rowIdx + 1) + '";  colIdx="' + rowIdx + '" rowIdx="' + colIdx + '" class="box ' +
+        rowDivs = rowDivs + '<div id="' + (colIdx + 1) + "" + (rowIdx + 1) + '"; value=" ";   colIdx="' + rowIdx + '" rowIdx="' + colIdx + '" class="box ' +
             additionalClass + '">' + content + '</div>';
     }
     return rowDivs;
@@ -103,13 +97,11 @@ function onBoxClick() {
         alert("Please choose another square!")
         return;
     }
-    console.log(turns);
+    console.log("Turn Click:" + turns);
+    console.log("turns Click:" + turn);
     if (turns % 2 === 0) {
-
-        marked.addClass(token1);
-        gameData.movesPlayer.push(this.id);
-        $("#message").text("It's Computers's turn!")
-        turns++;
+        markCheck(this);
+        $("#message").text("It's Your turn!")
 
         if (checkWin(gameData.movesPlayer, size)) {
             $("#message").text("Player wins!")
@@ -128,27 +120,8 @@ function onBoxClick() {
 
         }
     }
-    if (turns === 1) {
-        setTimeout(function () {
-            compMove1();
-            $("#message").text("It's " + gameData.playerName + "'s turn!");
-            console.log(1);
-        }, 1000);
-    } else if (turns === 3) {
-        setTimeout(function () {
-            compMove2();
-            console.log(2);
-            $("#message").text("It's " + gameData.playerName + "'s turn!");
-        }, 1000);
-    } else if (turns === 5) {
-        compMove3();
-        console.log(2);
-        $("#message").text("It's " + gameData.playerName + "'s turn!");
-    } else if (turns === 7) {
-        compMove4();
-        console.log(2);
-        $("#message").text("It's " + gameData.playerName + "'s turn!");
-    }
+    autoTurn();
+
     if (checkWin(gameData.movesComp, size)) {
         $("#message").text("Computer wins!");
         gameOver = true;
@@ -214,7 +187,7 @@ var checkOther = function (playerMoves, size) {
     row.sort();
     col.sort();
 
-    if (size === 3) {
+    if (size == 3) {
         for (var i = 0; i < row.length; i++) {
             if (row[i] === row[i + 1] && row[i] === row[i + 2]) {
                 return true;
@@ -223,6 +196,20 @@ var checkOther = function (playerMoves, size) {
 
         for (var i = 0; i < col.length; i++) {
             if (col[i] === col[i + 1] && col[i] === col[i + 2]) {
+                return true;
+            }
+        }
+        return false;
+    }
+    if (size == 4) {
+        for (var i = 0; i < row.length; i++) {
+            if (row[i] === row[i + 1] && row[i] === row[i + 2] && row[i] === row[i + 3]) {
+                return true;
+            }
+        }
+
+        for (var i = 0; i < col.length; i++) {
+            if (col[i] === col[i + 1] && col[i] === col[i + 2] && col[i] === col[i + 3]) {
                 return true;
             }
         }
@@ -280,7 +267,9 @@ function restart() {
     turns = 0;
     gameOver = false;
     $(".box").removeClass(gameData.token1).removeClass(gameData.token2);
-    $("#message").text("Let's play the game! " + gamePlayer.playerName + " first.")
+    $(".box").attr("value", ' ');
+
+    $("#message").text("Let's play the game! " + gameData.playerName + " first.")
 };
 
 function startPlay(playerName) {
@@ -294,17 +283,37 @@ function startPlay(playerName) {
     $('.scores').show();
 }
 
+$('#gameformat').on('change', function () {
+    console.log("Val:" + $('#gameformat').val());
+    var format = $('#gameformat').val();
+    if (format == 2) {
+        GRID_LENGTH = 4;
+        size = 4;
+        initializeGrid();
+        renderMainGrid();
+    } else {
+        GRID_LENGTH = 3;
+        size = GRID_LENGTH;
+        initializeGrid();
+        renderMainGrid();
+
+    }
+})
+
 var startBtn = document.getElementById("start");
 startBtn.addEventListener("click", function () {
-    console.log($('#option:checked').val());
+    //console.log($('#option:checked').val());
     gameData.playerName = $('#name').val();
+
     $('#player1 .name').text(gameData.playerName);
     if ($('#option:checked').val() == 'O') {
         gameData.token1 = 'O';
         gameData.token2 = 'X';
+        turn = 'O';
         startPlay(gameData.playerName);
     } else if ($('#option:checked').val() == 'X') {
         startPlay(gameData.playerName);
+        turn = 'X';
     } else if ($('#option:checked').val() == undefined)
         alert("Please select your option");
     else
@@ -315,129 +324,156 @@ startBtn.addEventListener("click", function () {
 var restartBtn = document.getElementById("restart");
 restartBtn.addEventListener("click", function () {
     restart();
-}); 
+});
 initializeGrid();
 renderMainGrid();
 
 
-var compMove1 = function () {
+function winnerPatterns() {
+    var wins = Array();
 
-    gridCheck(gameData.token1);
-    if (!b2) {
-        $("#22").addClass(gameData.token2);
-        gameData.movesComp.push("22");
-        turns++;
-    } else {
-        $("#13").addClass(gameData.token2);
-        gameData.movesComp.push("13");
-        turns++;
-    }
-}; // 1st computer move
+    // 3 x 3 winning patterns;
+    if (size == 3) wins = [
+        [11, 12, 13],
+        [21, 22, 23],
+        [31, 32, 33],
+        [11, 21, 31],
+        [12, 22, 32],
+        [13, 23, 33],
+        [11, 22, 33],
+        [13, 22, 31]
+    ];
+
+    // 4 x 4 winning patterns;
+
+    if (size == 4) wins = [
+        [11, 12, 13, 14],
+        [21, 22, 23, 24],
+        [31, 32, 33, 34],
+        [41, 42, 43, 44],
+        [11, 21, 31, 41],
+        [12, 22, 32, 42],
+        [13, 23, 33, 43],
+        [14, 24, 34, 44],
+        [14, 23, 32, 41],
+        [11, 22, 33, 44]
+    ];
+    return wins
+}
 
 
+// Computer patterns
+function DefaultComputerPatterns() {
+    var comp_turns = Array();
 
+    // 3 x 3 winning patterns;
+    if (size == 3) comp_turns = [22, 11, 33, 13, 21, 23, 12, 32, 31];
 
-var compMove2 = function () {
+    // 4 x 4 winning patterns;
+    if (size == 4) comp_turns = [11, 22, 33, 44, 14, 13, 12, 21, 31, 41, 42, 43, 24, 34, 32, 23];
+    return comp_turns
+}
 
-    gridCheck(gameData.token1);
-    if ((a1 && c3) || (a3 && c1)) {
-        $("#23").addClass(gameData.token2); 
-        gameData.movesComp.push("23");
-        turns++;
-    } else if ((a2 && c2) || (b1 && b3) || (a2 && c1) || (b1 && a3)) {
-        $("#11").addClass(gameData.token2); 
-        gameData.movesComp.push("11");
-        turns++;
-    } else if ((a3 && c2) || (b3 && c1) || (c1 && b2)) {
-        $("#33").addClass(gameData.token2);
-        gameData.movesComp.push("33");
-        turns++;
-    } else if ((a1 && c2) || (b1 && c3) || (a2 && b3) || (a2 && b1)) {
-        $("#31").addClass(gameData.token2);
-        gameData.movesComp.push("31");
-        turns++;
-    } else if ((a1 && b3) || (a2 && c3) || (b1 && c2) || (b3 && c2)) {
-        $("#13").addClass(gameData.token2);
-        gameData.movesComp.push("13");
-        turns++;
-    } else {
-        var id = blockOrWin(gameData.token1);
-        $("#" + id).addClass(gameData.token2);
-        gameData.movesComp.push(id);
-        turns++;
-    }
-}; // 2nd computer move
+function autoTurn(again = false) {
 
-var getEmpty = function () {
-    var boardX = gridCheck(gameData.token1);
-    var boardO = gridCheck(gameData.token2);
-    var empty = [];
-    for (var i = 0; i < boardX.length; i++) {
-        if (!boardX[i] && !boardO[i]) {
-            return i;
+    if (gameOver === true) return false;
+
+    var comp_pattern = '';
+    if (again == true) comp_pattern = DefaultComputerPatterns();
+    else comp_pattern = getAutoTurnPattern();
+    console.log(comp_pattern);
+    for (var x = 0; x < comp_pattern.length; x++) {
+        var desired_obj = document.getElementById(comp_pattern[x]);
+        var objectValue = desired_obj.getAttribute("value");
+        console.log('==>>' + objectValue);
+
+        if (objectValue == '' || objectValue == ' ') {
+            markCheck(desired_obj);
+            break;
         }
     }
-};
 
+}
 
-var compMove3 = function () {
-    var win = blockOrWin(gameData.token2);
-    var block = blockOrWin(gameData.token1);
+function markCheck(obj) {
+    console.log(obj.id);
+    obj.setAttribute("value", turn);
+    turns++;
+    console.log("Next:" + turn);
 
-    if (win) {
-        $("#" + win).addClass(gameData.token2);
-        gameData.movesComp.push(win);
-        turns++;
-    } else if (block) {
-        $("#" + block).addClass(gameData.token2);
-        gameData.movesComp.push(block);
-        turns++;
+    console.log(gameData.token1);
+
+    if (turn == gameData.token1) {
+        obj.classList.add(turn);
+        gameData.movesPlayer.push(obj.id);
     } else {
-        var i = getEmpty();
-        var id = arrayId[i];
-        $("#" + id).addClass(gameData.token2);
-        gameData.movesComp.push(id);
-        turns++;
+        obj.classList.add(turn);
+        gameData.movesComp.push(obj.id);
     }
 
-}; // 3rd computer move
+    console.log("Player" + gameData.movesPlayer);
+    console.log("Computer" + gameData.movesComp);
 
-var compMove4 = function () {
-    compMove3();
-}; // 4th computer move
+    changeTurn();
+}
 
+function changeTurn() {
+    if (turn == 'X') turn = 'O';
+    else turn = 'X';
+}
 
-var blockOrWin = function (token) {
-    var empty = checkEmpty();
-    gridCheck(token);
-    if (!empty[0] && ((a2 && a3) || (b1 && c1) || (b2 && c3))) {
-        return "11";
-    } else if (!empty[1] && ((a1 && a3) || (b2 && c2))) {
-        return "12";
-    } else if (!empty[2] && ((a1 && a2) || (b3 && c3) || (b2 && c1))) {
-        return "13";
-    } else if (!empty[3] && ((a1 && c1) || (b2 && b3))) {
-        return "21";
-    } else if (!empty[5] && ((a3 && c3) || (b1 && b2))) {
-        return "23";
-    } else if (!empty[6] && ((c2 && c3) || (a1 && b1) || (b2 && a3))) {
-        return "31";
-    } else if (!empty[7] && ((a2 && b2) || (c1 && c3))) {
-        return "32";
-    } else if (!empty[8] && ((c1 && c2) || (a3 && b3) || (a1 && b2))) {
-        return "33";
-    } else {
-        return false;
+function getAutoTurnPattern() {
+
+    var pattern = [];
+    pattern = getMostNearestPattern(gameData.movesComp);
+    if (pattern.length <= 0) {
+        pattern = getMostNearestPattern(gameData.movesPlayer);
+        if (pattern.length <= 0) {
+            pattern = DefaultComputerPatterns();
+        }
     }
-};
 
-var checkEmpty = function () {
-    var boardX = gridCheck(gameData.token1);
-    var boardO = gridCheck(gameData.token2);
-    var empty = [];
+    return pattern;
 
-    for (var i = 0; i < boardX.length; i++) {
-        empty[i] = boardX[i] || boardO[i];
+}
+var selection;
+
+function getMostNearestPattern(selection) {
+    var matches = 0;
+
+    var selected = selection.sort();
+    var win_patterns = winnerPatterns();
+
+    finished = false;
+    for (var x = 0; x < win_patterns.length; x++) {
+        var intersected = intersectionArray(selected, win_patterns[x]);
+
+        if (intersected.length == (win_patterns[x].length - 1)) {
+
+            for (var y = 0; y < win_patterns[x].length; y++) {
+                obj = document.getElementById(win_patterns[x][y]);
+
+                if (obj.getAttribute("value") == ' ' || obj.getAttribute("value") == '') {
+                    return win_patterns[x];
+                }
+            }
+        }
+
     }
-    return empty;
-};
+    return [];
+}
+
+function intersectionArray(x, y) {
+
+    var response = [];
+    for (var i = 0; i < x.length; i++) {
+        for (var z = 0; z < y.length; z++) {
+            if (x[i] == y[z]) {
+                response.push(x[i]);
+                break;
+            }
+        }
+    }
+    return response;
+
+}
