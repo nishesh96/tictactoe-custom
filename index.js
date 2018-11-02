@@ -34,10 +34,6 @@ var gameData = {
 
 var gameOver = false;
 var turns = 0;
-var arrayId = ["11", "12", "13", "14", "21", "22", "23", "24", "31", "32", "33", "34", "41", "42", "43", "44"];
-
-var a1, a2, a3, a4, b1, b2, b3, b4, c1, c2, c3, c4, d1, d2, d3, d4;
-
 
 function initializeGrid() {
     for (let colIdx = 0; colIdx < GRID_LENGTH; colIdx++) {
@@ -174,50 +170,6 @@ var checkDiag = function (diagonal, playerMoves) {
     return true;
 };
 
-// to check whether it's winning horizontally or vertically
-var checkOther = function (playerMoves, size) {
-    var row = [];
-    var col = [];
-
-    for (var i = 0; i < playerMoves.length; i++) {
-        row.push(Number(playerMoves[i][0]));
-        col.push(Number(playerMoves[i][1]));
-    }
-
-    row.sort();
-    col.sort();
-
-    if (size == 3) {
-        for (var i = 0; i < row.length; i++) {
-            if (row[i] === row[i + 1] && row[i] === row[i + 2]) {
-                return true;
-            }
-        }
-
-        for (var i = 0; i < col.length; i++) {
-            if (col[i] === col[i + 1] && col[i] === col[i + 2]) {
-                return true;
-            }
-        }
-        return false;
-    }
-    if (size == 4) {
-        for (var i = 0; i < row.length; i++) {
-            if (row[i] === row[i + 1] && row[i] === row[i + 2] && row[i] === row[i + 3]) {
-                return true;
-            }
-        }
-
-        for (var i = 0; i < col.length; i++) {
-            if (col[i] === col[i + 1] && col[i] === col[i + 2] && col[i] === col[i + 3]) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-};
-
 var checkWin = function (moves, size) {
     var diagonal1 = diagArr(GRID_LENGTH, 0);
     var diagonal2 = diagArr(GRID_LENGTH, 1);
@@ -242,19 +194,6 @@ function removeClickHandlers() {
         boxes[idx].removeEventListener('click', onBoxClick);
     }
 }
-
-var gridCheck = function (token) {
-    a1 = $("#11").hasClass(token);
-    a2 = $("#12").hasClass(token);
-    a3 = $("#13").hasClass(token);
-    b1 = $("#21").hasClass(token);
-    b2 = $("#22").hasClass(token);
-    b3 = $("#23").hasClass(token);
-    c1 = $("#31").hasClass(token);
-    c2 = $("#32").hasClass(token);
-    c3 = $("#33").hasClass(token);
-    return [a1, a2, a3, b1, b2, b3, c1, c2, c3];
-};
 
 
 function restart() {
@@ -286,18 +225,13 @@ function startPlay(playerName) {
 $('#gameformat').on('change', function () {
     console.log("Val:" + $('#gameformat').val());
     var format = $('#gameformat').val();
-    if (format == 2) {
-        GRID_LENGTH = 4;
-        size = 4;
-        initializeGrid();
-        renderMainGrid();
-    } else {
-        GRID_LENGTH = 3;
+    if (format > 2) {
+        GRID_LENGTH = format;
         size = GRID_LENGTH;
         initializeGrid();
         renderMainGrid();
-
-    }
+    } else
+        alert("Please enter propee grid size ie >2");
 })
 
 var startBtn = document.getElementById("start");
@@ -332,45 +266,113 @@ renderMainGrid();
 function winnerPatterns() {
     var wins = Array();
 
-    // 3 x 3 winning patterns;
-    if (size == 3) wins = [
-        [11, 12, 13],
-        [21, 22, 23],
-        [31, 32, 33],
-        [11, 21, 31],
-        [12, 22, 32],
-        [13, 23, 33],
-        [11, 22, 33],
-        [13, 22, 31]
-    ];
+    for (var r = 1; r <= size; r++) {
+        var row1 = [];
+        var row2 = [];
+        for (var c = 1; c <= size; c++) {
+            row1.push(r + "" + c);
+            row2.push(c + "" + r);
+            // console.log("row1");
+            // console.log(row1);
+        }
+        wins.push(row1);
+        wins.push(row2);
 
-    // 4 x 4 winning patterns;
-
-    if (size == 4) wins = [
-        [11, 12, 13, 14],
-        [21, 22, 23, 24],
-        [31, 32, 33, 34],
-        [41, 42, 43, 44],
-        [11, 21, 31, 41],
-        [12, 22, 32, 42],
-        [13, 23, 33, 43],
-        [14, 24, 34, 44],
-        [14, 23, 32, 41],
-        [11, 22, 33, 44]
-    ];
+        // wins.push(row2);   
+    }
+    var diag1 = diagArr(size, 1);
+    var diag0 = diagArr(size, 0);
+    wins.push(diag1);
+    wins.push(diag0);
     return wins
 }
 
+var diagArr = function (size, booleanNum) {
+    var row = [];
+    var col = [];
+    var diagonal = [];
+
+    for (var i = 1; i <= size; i++) {
+        i = String(i);
+        row.push(i);
+
+        if (booleanNum) {
+            col.unshift(i);
+        } else {
+            col.push(i);
+        }
+    }
+
+    for (var i = 0; i < row.length; i++) {
+        diagonal.push(row[i] + col[i]);
+    }
+    return diagonal;
+};
+
+
+var checkDiag = function (diagonal, playerMoves) {
+
+    for (var i = 0; i < diagonal.length; i++) {
+        if (playerMoves.indexOf(diagonal[i]) === -1) {
+            return false;
+        }
+    }
+    return true;
+};
+
+
+var checkOther = function (playerMoves, size) {
+    var row = [];
+    var col = [];
+
+    for (var i = 0; i < playerMoves.length; i++) {
+        row.push(Number(playerMoves[i][0]));
+        col.push(Number(playerMoves[i][1]));
+    }
+
+    row.sort();
+    col.sort();
+
+    for (var i = 0; i < size; i++) {
+        var tempR = row[i];
+        var tempC = col[i];
+        var ctrR = 0;
+        var ctrC = 0;
+
+        for (var j = 0; j < row.length; j++) {
+            if (tempR == row[j]) {
+                ctrR++;
+            }
+            if (ctrR == size)
+                return true;
+        }
+        for (var j = 0; j < col.length; j++) {
+            if (tempC == col[j]) {
+                ctrC++;
+            }
+            if (ctrC == size)
+                return true;
+        }
+    }
+    return false;
+}
+var checkWin = function (moves, size) {
+    var diagonal1 = diagArr(size, 0);
+    var diagonal2 = diagArr(size, 1);
+
+    if (checkDiag(diagonal1, moves) || checkDiag(diagonal2, moves) || checkOther(moves, size)) {
+        return true;
+    }
+    return false;
+};
 
 // Computer patterns
 function DefaultComputerPatterns() {
     var comp_turns = Array();
+    for (var o = 1; o <= size; o++)
+        for (var j = 1; j <= size; j++)
+            comp_turns.push(o + "" + j);
 
-    // 3 x 3 winning patterns;
-    if (size == 3) comp_turns = [22, 11, 33, 13, 21, 23, 12, 32, 31];
-
-    // 4 x 4 winning patterns;
-    if (size == 4) comp_turns = [11, 22, 33, 44, 14, 13, 12, 21, 31, 41, 42, 43, 24, 34, 32, 23];
     return comp_turns
 }
 
@@ -443,11 +445,12 @@ function getMostNearestPattern(selection) {
 
     var selected = selection.sort();
     var win_patterns = winnerPatterns();
+    console.log("win_patterns");
+    console.log(win_patterns);
 
     finished = false;
     for (var x = 0; x < win_patterns.length; x++) {
         var intersected = intersectionArray(selected, win_patterns[x]);
-
         if (intersected.length == (win_patterns[x].length - 1)) {
 
             for (var y = 0; y < win_patterns[x].length; y++) {
