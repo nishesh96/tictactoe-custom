@@ -1,5 +1,25 @@
-# AI featured 10x10 grid 
-Tic Tac Toe with AI developed using Vanilla Javascript, HTML
+# Tic Tac Toe - Play Tic Tac Toe with computer
 
-Clone the repsitory.
-Open index.html and start the game play. Enjoy.
+http://githubbox.com/nishesh96/AI-custom-tictactoe
+
+- How to Play - 
+> Enter your name.
+> Enter grid size. default 3x3.
+> Play.
+
+
+- Tech Used - 
+> Javascript, HTML
+
+- For Developers -
+> Clone the repsitory.
+> Open index.html and start the game play. Enjoy.
+
+
+
+
+
+
+
+
+
